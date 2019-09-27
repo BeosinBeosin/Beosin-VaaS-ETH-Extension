@@ -1,0 +1,122 @@
+{
+    "name": "beosin-vaas-eth",
+    "displayName": "Beosin-VaaS: ETH",
+    "description": "Beosin-VaaS for ETH.",
+    "version": "0.0.1",
+    "publisher": "Beosin",
+    "icon": "media/logo.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BeosinBeosin/Beosin-VaaS-ETH-Extension.git"
+    },
+    "homepage": "https://github.com/BeosinBeosin/Beosin-VaaS-ETH-Extension",
+    "engines": {
+        "vscode": "^1.30.0"
+    },
+    "contributors": [
+        "leocll"
+    ],
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "beosin",
+        "Beosin",
+        "vaas",
+        "VaaS",
+        "solidity",
+        "Solidity",
+        "eth",
+        "ETH"
+    ],
+    "activationEvents": [
+        "onCommand:beosin-vaas-eth.start"
+    ],
+    "main": "./src/extension.js",
+    "contributes": {
+        "languages": [
+            {
+                "id": "solidity",
+                "aliases": [
+                    "Solidity",
+                    "solidity",
+                    "BaaS",
+                    "baas"
+                ],
+                "extensions": [
+                    ".sol"
+                ]
+            }
+        ],
+        "commands": [
+            {
+                "command": "beosin-vaas-eth.start",
+                "title": "Beosin-VaaS: ETH",
+                "icon": {
+                    "light": "./media/vaas_light.svg",
+                    "dark": "./media/vaas_dark.svg"
+                }
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "beosin-vaas-eth.start",
+                "key": "shift+alt+e",
+                "mac": "shift+alt+e",
+                "when": "editorFocus && editorLangId == solidity"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "when": "resourceLangId == solidity",
+                    "command": "beosin-vaas-eth.start",
+                    "group": "2@0"
+                }
+            ],
+            "editor/title": [
+                {
+                    "when": "resourceLangId == solidity",
+                    "command": "beosin-vaas-eth.start",
+                    "group": "navigation"
+                }
+            ],
+            "editor/title/context": [
+                {
+                    "when": "resourceLangId == solidity",
+                    "command": "beosin-vaas-eth.start",
+                    "group": "navigation"
+                }
+            ],
+            "editor/context": [
+                {
+                    "when": "editorFocus && editorLangId == solidity",
+                    "command": "beosin-vaas-eth.start",
+                    "group": "2@0"
+                }
+            ]
+        }
+    },
+    "extensionDependencies": [
+        "juanblanco.solidity"
+    ],
+    "scripts": {
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "node ./node_modules/vscode/bin/test",
+        "build": "npm run buildweb && npm run buildext",
+        "buildext": "vsce package",
+        "buildweb": "pushd ./web &> /dev/null && { npm run build;popd &> /dev/null;}",
+        "startweb": "pushd ./web &> /dev/null && { npm run dev;popd &> /dev/null;}"
+    },
+    "devDependencies": {
+        "typescript": "^3.3.1",
+        "vscode": "^1.1.28",
+        "eslint": "^5.13.0",
+        "@types/node": "^10.12.21",
+        "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "eslint-utils": "^1.4.2",
+        "shelljs": "^0.8.3"
+    }
+}
