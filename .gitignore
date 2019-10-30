@@ -5,3 +5,5 @@ node_modules
 src/vscode/vscode.storage/file/**
 src/language_out/**
 Beosin-VaaS
+.__PACKAGE__
+.__VAAS__
