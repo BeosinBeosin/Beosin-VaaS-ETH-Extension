@@ -20,8 +20,8 @@
             </el-select>
         </div>
         <div style="padding: 0px;">
-            <el-button style="margin: 0px 0px 25px;" @click="start" :loading="starting" type="primary" size="small" class="button">{{starting?"":"Start"}}</el-button>
-            <el-button style="margin: 0px 0px 25px;" v-show="starting" @click="end" :loading="ending" type="primary" size="small" class="button">{{ending?"":"End"}}</el-button>
+            <el-button style="margin: 0px 0px 25px;" @click="start" :loading="isVaas_ing" type="primary" size="small" class="button">{{isVaas_ing?"":"Start"}}</el-button>
+            <el-button style="margin: 0px 0px 25px;" v-show="isVaas_ing" @click="end" :loading="ending" type="primary" size="small" class="button">{{ending?"":"End"}}</el-button>
         </div>
     </div>
 </template>
@@ -47,6 +47,11 @@ export default {
             starting: false,
             ending: false
         };
+    },
+    computed: {
+        isVaas_ing: function() {
+            return this.starting || this.ending;
+        }
     },
     watch: {
         vaasPath: function(val) {
@@ -116,10 +121,10 @@ export default {
         end: function() {
             this.ending = true;
             window.vscode.vaasEnd({vaasPath: this.vaasPath}).then(() => {
-                this.starting = false;
+                // this.starting = false;
                 this.ending = false;
             }).catch(() => {
-                this.starting = false;
+                // this.starting = false;
                 this.ending = false;
             });
         }

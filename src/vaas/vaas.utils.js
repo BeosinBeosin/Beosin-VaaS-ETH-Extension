@@ -123,7 +123,7 @@ class Vaas {
     }
     create_process({ vaasPath = undefined, cmd = this._start_program, args = [] }, pathErrorBack = undefined, printPid = true) {
         vaasPath || (vaasPath = utils.storage.getItem('vaasPath'));
-        utils.Api.showTxt2Output({ txt: `\nCWD: ${vaasPath}\nCMD: ${cmd} ${args.join(' ')}` });
+        // utils.Api.showTxt2Output({ txt: `\nCWD: ${vaasPath}\nCMD: ${cmd} ${args.join(' ')}` });
         if (!fs.existsSync(path.join(vaasPath, cmd))) {
             pathErrorBack && pathErrorBack({ code: -1, error: `Not found executor.` });
             return;
@@ -232,12 +232,44 @@ const installVaas = (name = '') => {
                     return item.solcPackage;
                 })).then(resolve).catch(reject);
             } else {
+                utils.Api.showTxt2Output({ txt: `Please select compilers you need to install.` });
                 reject(new Error('Please select compilers you need to install'));
             }
         });
     });
 }
+
+const updateVaas = () => {
+    return new Promise((resolve, reject) => {
+        if (fs.existsSync(pkg.vaasPackage.packagePath)) {
+            // utils.Api.showTxt2Output({ txt: `Remove ${pkg.vaasPackage.packagePath}...` });
+            fs.unlinkSync(pkg.vaasPackage.packagePath);
+        }
+        const vaas_bk = `${pkg.vaasPackage.unzipedPath}_bk`;
+        if (fs.existsSync(pkg.vaasPackage.unzipedPath)) {
+            fs.renameSync(pkg.vaasPackage.unzipedPath, vaas_bk);
+        }
+        pkg.activate([]).then((d) => {
+            if (fs.existsSync(vaas_bk)) {
+                if (fs.existsSync(pkg.vaasPackage.getSolcPath(vaas_bk))) {
+                    pkg.rmdirSync(pkg.vaasPackage.getSolcPath());
+                    fs.renameSync(pkg.vaasPackage.getSolcPath(vaas_bk), pkg.vaasPackage.getSolcPath());
+                }
+                pkg.rmdirSync(vaas_bk);
+            }
+            resolve(d);
+        }).catch((e) => {
+            if (fs.existsSync(vaas_bk)) {
+                pkg.rmdirSync(pkg.vaasPackage.unzipedPath);
+                fs.renameSync(vaas_bk, pkg.vaasPackage.unzipedPath);
+            }
+            reject(e);
+        });
+    });
+}
+
 module.exports = {
     vaas,
-    installVaas
+    installVaas,
+    updateVaas
 };

@@ -16,3 +16,6 @@ web/**
 web/dist/**/*.map
 script
 Beosin-VaaS
+
+.__PACKAGE__
+.__VAAS__

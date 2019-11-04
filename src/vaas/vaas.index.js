@@ -3,7 +3,7 @@ const { Diagnostic, Range, DiagnosticSeverity } = require('vscode');
 const fs = require('fs');
 const utils = require('../vscode/vscode.utils');
 const VaasWebView = require('./vaas.webview');
-const { vaas, installVaas } = require('./vaas.utils');
+const { vaas, installVaas, updateVaas } = require('./vaas.utils');
 const pkg = require('./vaas.package');
 
 const name = 'Beosin-VaaS: ETH';
@@ -81,6 +81,11 @@ const activate = (context, dgtClt) => {
         }
     });
     context.subscriptions.push(start);
+    // beosin-vaas-eth.update
+    const update = vscode.commands.registerCommand('beosin-vaas-eth.update', () => {
+        updateVaas();
+    });
+    context.subscriptions.push(update);
 }
 
 const deactivate = () => {

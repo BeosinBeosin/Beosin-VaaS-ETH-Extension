@@ -1,10 +1,7 @@
 const vscode = require('vscode');
 const vaas = require('./vaas/vaas.index');
-const pkg = require('./vaas/vaas.package');
 
 function activate(context) {
-    // pkg.activate(context);
-    // return;
     // 语言诊断
     const diagnosticCollection = vscode.languages.createDiagnosticCollection(vaas.name);
     context.subscriptions.push(diagnosticCollection);

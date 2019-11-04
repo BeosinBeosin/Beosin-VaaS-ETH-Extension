@@ -1,17 +1,29 @@
+[English](README_en.md)
+
 # Beosin-VaaS: ETH  
 
 ### 产品介绍：
-本产品为`Beosin-VaaS`针对以太坊（`Ethereum`,简称`ETH`）智能合约安全检测开发的定制化工具。`Beosin-VaaS`一键式智能合约自动形式化验证工具可精确定位到有风险的代码位置并指出风险原因，有效的检测智能合约常规安全漏洞，精确度高达95%以上，为智能合约代码提供“军事级”的安全验证。  
-`Beosin-VaaS`面向`ETH`的智能合约自动形式化验证工具，能够“一键式”自动检测包括五大项、二十四小项常规安全漏洞。并且会随着版本的迭代不断增加新的检测项。  
+本产品为`Beosin-VaaS`针对以太坊（`Ethereum`,简称`ETH`）智能合约安全检测开发的定制化工具。`Beosin-VaaS`一键式智能合约自动形式化验证工具可精确定位到有风险的代码位置并指出风险原因，有效的检测智能合约常规安全漏洞，精确度高达97%以上，为智能合约代码提供“军事级”的安全验证。  
+`Beosin-VaaS`面向`ETH`的智能合约自动形式化验证工具，目前能够“一键式”自动检测包括五大项、二十七小项常规安全漏洞（其中六小项仅企业版可用）。并且会随着版本的迭代不断增加新的检测项。  
 对`windows`系统的用户，需要保证电脑装有`Node.js`和`Visual C++`库，否则插件运行时可能出错。  
 `Node.js`下载地址：[https://nodejs.org/zh-cn/download/](https://nodejs.org/zh-cn/download/)。  
 `Visual C++`库下载地址：[https://visualstudio.microsoft.com/zh-hans/downloads/](https://visualstudio.microsoft.com/zh-hans/downloads/)，选择其他工具和框架中的`Microsoft Visual C++ Redistributable for Visual Studio 2019`下载安装。  
 本工具整个测试过程均在本地完成，这样可以打消用户对源码泄露的顾虑。另外，本工具基于`VS Code` 实现了`ETH`智能合约的代码高亮与代码补全，方便用户一边开发一边测试，在发现问题后迅速定位，快速修改。
+
+### 安装方法：
+打开`VS Code`，在其拓展超市中，搜索`Beosin-VaaS: ETH`，选择安装即可。
+
 ### 使用方法：
 安装完成后使用`VS Code`打开合约项目，选择合约文件 -> 右键(即可看见`Beosin-VaaS: ETH`选项)：  
 ![opening](media/img/opening.jpg)
 
-选择`Beosin-VaaS: ETH`选项，出现操作界面：  
+第一次选择`Beosin-VaaS: ETH`选项，会出现以下界面，用于选择需要用到的编译器：
+![toinstall](media/img/toinstall.jpg)
+
+选择完成后，便会出现以下界面：
+![installing](media/img/installing.jpg)
+
+下载完成后，便会出现操作界面：  
 ![todo](media/img/todo.jpg)
 
 点击`settings`按钮(右上角⚙)可以自定义部分测试参数：
@@ -27,10 +39,14 @@
 完成测试后，最终结果显示如下：  
 ![done](media/img/done.jpg)
 
+### 更新`Beosin-VaaS`：
+快捷键`ctrl+shift+p`（Mac OS X: `command+shift+p`），搜索`Beosin-VaaS: ETH - Update`并执行：
+![done](media/img/update.jpg)
+
 ### 结果说明：
-工具的检测结果根据检测内容现在可分为五大项、二十四小项，并且会随着版本的迭代不断增加新的检测项。下面按分类对已有结果进行说明。
+目前,工具的检测结果根据检测内容现在可分为五大项、二十七小项（其中六小项仅企业版可用），并且会随着版本的迭代不断增加新的检测项。下面按分类对已有结果进行说明。
 #### 1、代码规范检测
-此大项主要针对合约编写时的一些代码规范进行检测，共有十小项。
+此大项主要针对合约编写时的一些代码规范进行检测，共有十一小项。
 - 1.1 ERC规范  
 包含了`ETH`常见的`ERC20`、`ERC721`、`ERC1400`、`ERC1404`、`ERC223`、`ERC777`等常见的合约标准检测，确保了开发人员能正确实现这些标准。 
 - 1.2 Transfer To Zero Address  
@@ -50,9 +66,12 @@
 - 1.9 No Return  
 如果声明一个函数有返回值，而最后没给它返回值，就会产生一个默认的返回值，而默认返回值和实际执行后的返回值可能存在差异。
 - 1.10 Overload Syscall  
-对于`Solidity`已内置函数如`assert`，或者`BaaS`内置的系统函数如`property_parse`等，如果在合约中进行了重定义，可能会出现异常。
+对于`Solidity`已内置函数如`assert`，如果在合约中进行了重定义，可能会出现异常。
+- 1.11 Fake Recharge Vulnerability  
+`ERC20`合约在`transfer`函数中可能失败，这时函数并没有异常退出，而是`return false;`如果交易所根据调用状态来判断转账是否成功，将会导致错误的判断。
+
 #### 2、函数调用检测
-此大项用于检查合约中在进行函数调用时可能出现的问题，共有四小项。
+此大项用于检查合约中在进行函数调用时可能出现的问题，共有五小项。
 - 2.1 Invoke Low Level Calls  
 `call`是以太坊智能合约编写语言`Solidity`提供的底层函数，用来与外部合约或者库进行交互。此类函数使用时需要对调用参数的安全性进行判定；`delegatecall`会保持调用环境不变的属性表明，构建无漏洞的定制库并不像人们想象的那么容易。库中的代码本身可以是安全的，无漏洞的，但是当在另一个应用的环境中运行时，可能会出现新的漏洞；`selfdestruct`自杀函数的调用会销毁合约。
 - 2.2 Invoke Extcodesize  
@@ -61,18 +80,23 @@
 `keccak256()`和`ecrecover()`都是内嵌的函数，`keccak256()`可以用于计算公钥的签名，`ecrecover()`可以用来恢复签名公钥。传值正确的情况下，可以利用这两个函数来验证地址。但当`ecrecover()`的参数错误时候，返回`0x0`地址，如果`_from`也传入`0x0`地址，就能通过校验。也就是说，任何人都可以将`0x0`地址的余额转出
 - 2.4 Unchecked Call Or Send Return Values  
 在调用`call`/`send`函数后无论执行成功还是失败都不会直接抛异常，如果不对调用返回值进行检查，函数会继续执行。
+- 2.5 Re Entrancy（企业版）  
+合约内错误的逻辑实现可能导致重入调用，用户能重复转走`Token`。
+
 #### 3、业务逻辑安全检测
-此大项主要用于检查可能导致业务逻辑出现安全风险的问题，共有五个检查项。
+此大项主要用于检查可能导致业务逻辑出现安全风险的问题，共有六个检查项。
 - 3.1 Block Members Manipulation  
 区块参数依赖风险主要有时间戳依赖和区块哈希依赖，这种风险主要来自于使用他们生成随机数，因为它们可以被操纵或者被攻击者获取，所以不应该用于随机种子。
 - 3.2 Arbitrary Jump with Function Type Variable  
 由于`Solidity`不支持指针算术，因此无法将此变量更改为任意值。但是，如果开发人员在最坏的情况下使用汇编指令（例如或赋值运算符），则攻击者可以将函数类型变量指向任何代码指令，从而违反所需的验证和所需的状态更改。
 - 3.3 Check This Balance  
 合约代码中严格限制了合约的资金，而大多数情况下合约资金都是可变的，因此用户能轻松利用这个特性使得合约的功能逻辑无法正常执行。  
-- 3.4 Function Problem  
+- 3.4 Function Problem（企业版）  
 函数永远只会以`revert()`等异常状态结束，无法正常执行完后`return`，说明函数设计出现了问题。
-- 3.5 Call Problem  
+- 3.5 Call Problem（企业版）  
 `Call`调用永远失败，说明函数设计出现了问题。
+- 3.6 Denial Of Service（企业版）  
+合约可能在恶意调用之后，造成合约拒绝服务，其他用户无法正常调用合约。
 
 #### 4、溢出检测。
 溢出是典型的合约漏洞，可能导致检查被绕过，合约运行逻辑出错。在此大项中，VaaS主要进行了三小项的检测。
@@ -82,7 +106,37 @@
 
 #### 5、异常可达状态检测
 用于检测合约在执行过程中可能出现的异常状态，共有两个检查项。
-- 5.1 Assert Fail  
+- 5.1 Assert Fail（企业版）  
 `assert`的限制条件是必须满足的，在条件可能不满足的情况下会报错，说明合约运行状态异常。
-- 5.2 Require Fail  
+- 5.2 Require Fail（企业版）  
 与`assert`类似，默认`reqiure`条件是可能满足的，当条件在任何情况下都无法满足会报错，说明合约运行状态异常
+
+### 业务逻辑测试方法：
+因为`VaaS`支持异常可达状态检测，所以在使用`VaaS`时可以通过添加`require`和`assert`来测试函数的业务逻辑是否有问题。下面以最近曝出的以太坊游戏合约`Cheeze Wizards`的漏洞为例做一个简单的说明：
+
+![explain1](media/img/explain1.jpg)
+
+上图为合约中问题函数`resolveTimeOutDuel`的简单实现，若直接由`VaaS`进行检测不会发现任何问题。  
+
+![result1](media/img/result1.jpg)
+
+根据函数的说明可以知道，`resolveTimeOutDuel`是在决斗超时的情况下被调用，当满足一定的条件后，会将`wiz2`的`power`转移到`wiz1`上。根据这个逻辑我们很容易可以得到一个结论，那就是无论条件是否满足，函数执行前`wiz1.power+wiz2.power`和执行后的`wiz1.power+wiz2.power`应该相等。所以可以在函数起始和结束添加代码来描述这个逻辑：
+
+![explain2](media/img/explain2.jpg)
+
+这样再通过`VaaS`进行检测时`35`行就会报告`Assert Fail`：
+
+![result2](media/img/result2.jpg)
+
+说明执行前后的`power`总数有可能出现变化，合约设计有问题。稍加检查就能发现当`wiz1 == wiz2`时，`wiz1.power`被设为`0`了，所以需要加上`require(wiz1 != wiz2)`的限制。
+
+### 版本说明：
+本版本为`VS Code`插件免费版，供个人和开发者免费使用。对于安全需求较高，业务逻辑复杂的智能合约，建议选择我们的企业版工具或人工审计服务，进一步审计合约安全性。免费版、企业版和人工审计的区别如下：
+
+![compareversion](media/img/compareversion.png)
+
+各版本均可通过[成都链安区块链安全一站式服务平台](https://www.beosin.com)获得。在使用中有任何意见和建议，或需要企业版或人工审计服务的用户请通过以下方式联系：
+
+![contactus](media/img/contactus.png)
+
+[成都链安](https://www.lianantech.com/#/?index=4)

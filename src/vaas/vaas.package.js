@@ -14,6 +14,21 @@ function mkdirP(dir, ppath = undefined) {
     ppath && fs.mkdirSync(ppath);
 }
 
+function rmdirSync(dir) {
+    if (fs.existsSync(dir)) {
+        if (fs.statSync(dir).isDirectory()) {
+            const files = fs.readdirSync(dir);
+            files.forEach(file => {
+                rmdirSync(path.join(dir, file));
+            });
+            // delete a empty directory
+            fs.rmdirSync(dir);
+        } else {
+            fs.unlinkSync(dir);
+        };
+    }
+}
+
 function chmodR(ppath, mode = 0o777) {
     fs.chmodSync(ppath, mode);
     if (fs.statSync(ppath).isDirectory()) {
@@ -186,14 +201,19 @@ class Package {
         });
     }
     _unzip() {
+        if (fs.existsSync(this.unzipedPath)) {
+            utils.Api.showTxt2Output({ txt: `Remove ${this.name}...` });
+            rmdirSync(this.unzipedPath);
+        }
         utils.Api.showTxt2Output({ txt: `Unzip ${this.name}...` });
         try {
             const zip = new AdmZip(this.packagePath);
             zip.extractAllTo(this.unzipPath);
             this._chmod();
+            utils.Api.showTxt2Output({ txt: `Installed ${this.name}` });
         } catch (e) {
             utils.Api.showTxt2Output({ txt: `Unzip ${this.name} error: ${e.message || e.toString()}` });
-            this.unzipedPath && fs.existsSync(this.unzipedPath) && fs.rmdirSync(this.unzipedPath);
+            this.unzipedPath && rmdirSync(this.unzipedPath);
             return e;
         }
     }
@@ -241,7 +261,7 @@ class Package {
 Package.init();
 
 const platformStr = platform === 'darwin' ? 'Darwin' : (platform === 'win32' ? 'Windows' : 'Linux');
-const vaasBaseUrl_github = 'https://github.com/BeosinBeosin/Beosin-VaaS-ETH-Extension/raw/solc';
+const vaasBaseUrl_github = 'https://github.com/BeosinBeosin/Beosin-VaaS-ETH-Extension/raw/vaas';
 const vaasBaseUrl_aliyun = 'https://solc.oss-cn-zhangjiakou.aliyuncs.com/eth';
 class VaasPackage extends Package {
     constructor() {
@@ -254,6 +274,9 @@ class VaasPackage extends Package {
         this.unzipedPath = path.join(this.unzipPath, 'Beosin-VaaS');
         this.packagePath = path.join(Package.packageDir, `${this.name}.zip`);
         this.executeDir = path.join(this.unzipedPath, 'start');
+    }
+    getSolcPath(vaasPath = this.unzipedPath) {
+        return path.join(vaasPath, 'start', 'solc', 'eth', platformStr);
     }
 }
 const vaasPackage = new VaasPackage();
@@ -401,5 +424,6 @@ class PackageDownloader {
 module.exports = {
     activate,
     vaasPackage,
-    solcPackages
+    solcPackages,
+    rmdirSync
 };

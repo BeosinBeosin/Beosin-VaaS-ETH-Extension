@@ -62,7 +62,7 @@ class WebView {
         WebView.writeStorage();
     }
     static syncStorage(poster, uri) {
-        utils.storage.read();
+        // utils.storage.read();
         utils.storage.setItem('rootPath', utils.Api.toWinPath(vscode.workspace.rootPath));
         utils.storage.setItem('startPath', utils.Api.toWinPath(uri ? uri.path : vscode.workspace.rootPath));
         poster.postMessage(Message.updateStorage(utils.storage.cache));
