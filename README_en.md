@@ -11,7 +11,7 @@ For Windows users, you need to make sure that your computer has `Node.js` and `V
 With `Beosin-VaaS:ETH` , The whole testing process is completed locally, which can eliminate the user's concerns about source code leakage. In addition, `Beosin-VaaS:ETH` implements `ETH` smart contract Code highlighting and Code completion based on `VS Code`, which is convenient for users to test in development, it can locate and help users modify problems quickly after the problems are found.  
 
 ### Installation:  
-Open `VS Code`, in its extension supermarket, search `Beosin-VaaS: ETH`, and select install.  
+Open `VS Code`(Above v1.30.0), in its extension supermarket, search `Beosin-VaaS: ETH`, and select install.  
 
 ### Usage:  
 After installation, open contract project with `VS Code`, select contract file, right click (`Beosin-VaaS: ETH` option):  
