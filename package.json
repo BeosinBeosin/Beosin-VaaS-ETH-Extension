@@ -107,6 +107,6 @@
     "dependencies": {
         "adm-zip": "^0.4.13",
         "ping-lite": "^2.0.2",
-        "shelljs": "^0.8.3"
+        "shelljs": "^0.8.5"
     }
 }
